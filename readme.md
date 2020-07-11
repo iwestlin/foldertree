@@ -5,3 +5,6 @@
 
 ./index.js . -f > example-withfile.html
 ```
+
+## screenshot
+![](./dist/screenshot.png)
