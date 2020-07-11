@@ -13,20 +13,23 @@ function main () {
   let dir = process.argv[2] || ''
   dir = dir.trim()
   if (!dir) throw 'missing directory path!'
+  const last_arg = process.argv[process.argv.length - 1]
+  const with_file = ['-f', '--file'].includes(last_arg)
   dir = path.resolve(process.cwd(), dir)
   const root = {
     title: dir.split('/').pop(),
     key: dir,
     children: gen_children(dir)
   }
-  return [extract(calc(root))]
+  return [extract(calc(root), with_file)]
 }
 
-function extract (node) {
+function extract (node, with_file) {
   let {children} = node
-  children = children.filter(v => v.children) // 只保留目录
-  // children.sort((a, b) => b.number - a.number) // 根据文件数排序
-  children.sort((a, b) => b.size - a.size)
+  if (!children) return node
+  if (!with_file) children = children.filter(v => v.children) // 只保留目录
+  children.sort((a, b) => b.number - a.number) // 根据文件数排序
+  // children.sort((a, b) => b.size - a.size) // 根据文件数排序
   node.children = children.map(extract)
   node.title = `${node.title} | [${node.number} files, ${format_size(node.size)}]`
   return node
@@ -66,7 +69,8 @@ function gen_children (dir) {
       key: `${dir}/${name}`,
       children: gen_children(`${dir}/${name}`)
     }
-    return {title: `${dir}/${name}`, size}
+    // return {title: `${dir}/${name}`, size}
+    return {title: name, size, isLeaf: true}
   })
 }
 

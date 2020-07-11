@@ -26,7 +26,7 @@ class FolderTree extends React.Component {
     const {expand_all} = this.state
     return (
     <div>
-      <Button onClick={this.trigger_expand}>{expand_all ? '折叠所有' : '展开所有'}</Button>
+      <Button onClick={this.trigger_expand}>{expand_all ? 'Fold All' : 'Expand All'}</Button>
       {expand_all ? <DirectoryTree
         key={1}
         multiple
