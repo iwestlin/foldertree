@@ -13,8 +13,7 @@ function main () {
   let dir = process.argv[2] || ''
   dir = dir.trim()
   if (!dir) throw 'missing directory path!'
-  const last_arg = process.argv[process.argv.length - 1]
-  const with_file = ['-f', '--file'].includes(last_arg)
+  const with_file = process.argv.some(v => v === '-f' || v === '--file')
   dir = path.resolve(process.cwd(), dir)
   const root = {
     title: dir.split('/').pop(),
