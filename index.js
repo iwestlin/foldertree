@@ -1,16 +1,15 @@
-#!/usr/bin/env node
-
 const fs = require('fs')
 const path = require('path')
 
-console.log(tree_tpl(JSON.stringify(main())))
+module.exports = main
 
 function tree_tpl (str) {
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name="theme-color" content="#000000"><title>Folder Tree</title><link href="https://cdn.jsdelivr.net/gh/iwestlin/foldertree/dist/min.css" rel="stylesheet"></head><body><noscript>Please Enable JavaScript</noscript><div id="root"></div><script type="text/javascript">var treedata = ${str}</script><script type="text/javascript" src="https://cdn.jsdelivr.net/gh/iwestlin/foldertree/dist/min.js"></script></body></html>`
 }
 
 function main () {
-  let dir = process.argv[2] || ''
+  const args = process.argv.filter(v => v !== '-f' && v !== '--file')
+  let dir = args[2] || ''
   dir = dir.trim()
   if (!dir) throw 'missing directory path!'
   const with_file = process.argv.some(v => v === '-f' || v === '--file')
@@ -20,30 +19,34 @@ function main () {
     key: dir,
     children: gen_children(dir)
   }
-  return [extract(calc(root), with_file)]
+  const result = [extract(calc(root), with_file)]
+  return tree_tpl(JSON.stringify(result))
 }
 
 function extract (node, with_file) {
   let {children} = node
-  if (!children) return node
-  if (!with_file) children = children.filter(v => v.children) // 只保留目录
-  children.sort((a, b) => b.number - a.number) // 根据文件数排序
-  // children.sort((a, b) => b.size - a.size) // 根据文件数排序
-  node.children = children.map(extract)
+  if (!children) { // is file
+    node.title = `${node.title} | [${format_size(node.size)}]`
+    return node
+  }
+  if (!with_file) children = children.filter(v => v.children) // only keep folders
+  children.sort((a, b) => b.number - a.number) // sort by total file number
+  // children.sort((a, b) => b.size - a.size) // sort by total file size
+  node.children = children.map(v => extract(v, with_file))
   node.title = `${node.title} | [${node.number} files, ${format_size(node.size)}]`
   return node
 }
 
 function calc (node) {
-  if (node.number !== undefined) return node // 计算过了
+  if (node.number !== undefined) return node // calced
   let total_number = 0
   let total_size = 0
   for (const child of node.children) {
-    if (child.key) { // 是目录
+    if (child.key) { // is folder
       const {number, size} = calc(child)
       total_number += number
       total_size += size
-    } else { // 文件
+    } else { // is file
       total_number += 1
       total_size += child.size
     }
