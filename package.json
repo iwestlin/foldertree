@@ -1,7 +1,8 @@
 {
-  "name": "foldertree",
+  "name": "fdtree",
   "version": "1.0.0",
   "description": "",
+  "repository": "iwestlin/foldertree",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
