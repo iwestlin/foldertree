@@ -1,6 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 
+const snap2html = require('./snap')
+
 module.exports = main
 
 function tree_tpl (str) {
@@ -8,10 +10,12 @@ function tree_tpl (str) {
 }
 
 function main () {
-  const args = process.argv.filter(v => v !== '-f' && v !== '--file')
+  const args = process.argv.filter(v => !v.startsWith('-'))
   let dir = args[2] || ''
   dir = dir.trim()
   if (!dir) throw 'missing directory path!'
+  const to_snap = process.argv.some(v => v === '-s' || v === '--snap')
+  if (to_snap) return snap2html(dir)
   const with_file = process.argv.some(v => v === '-f' || v === '--file')
   dir = path.resolve(process.cwd(), dir)
   const root = {

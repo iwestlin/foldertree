@@ -24,4 +24,6 @@ If you don't want add it to path, then simply run commands like:
 ./bin/ftree . > example.html
 
 ./bin/ftree . -f > example-withfile.html # -f or --file, means show tree with files
+
+./bin/ftree . -s > example-snap.html # -s or --snap, means export html in https://github.com/rlv-dan/Snap2HTML
 ```
