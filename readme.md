@@ -8,6 +8,8 @@
 ## screenshot
 ![](./dist/screenshot.png)
 
+![](./dist/screenshot2.png)
+
 ## usage
 ```bash
 git clone https://github.com/iwestlin/foldertree && cd foldertree

@@ -1,6 +1,6 @@
 {
   "name": "fdtree",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "repository": "iwestlin/foldertree",
   "main": "index.js",
