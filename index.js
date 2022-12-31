@@ -6,7 +6,7 @@ const snap2html = require('./snap')
 module.exports = main
 
 function tree_tpl (str) {
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name="theme-color" content="#000000"><title>Folder Tree</title><link href="https://cdn.jsdelivr.net/gh/iwestlin/foldertree/dist/min.css" rel="stylesheet"></head><body><noscript>Please Enable JavaScript</noscript><div id="root"></div><script type="text/javascript">var treedata = ${str}</script><script type="text/javascript" src="https://cdn.jsdelivr.net/gh/iwestlin/foldertree/dist/min.js"></script></body></html>`
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name="theme-color" content="#000000"><title>Folder Tree</title><link href="https://unpkg.com/@viegg/static/fdtree.css" rel="stylesheet"></head><body><noscript>Please Enable JavaScript</noscript><div id="root"></div><script type="text/javascript">var treedata = ${str}</script><script type="text/javascript" src="https://unpkg.com/@viegg/static/fdtree.js"></script></body></html>`
 }
 
 function main () {
@@ -23,6 +23,8 @@ function main () {
     key: dir,
     children: gen_children(dir)
   }
+  const to_json = process.argv.some(v => v === '-j' || v === '--json')
+  if (to_json) return JSON.stringify(root)
   const result = [extract(calc(root), with_file)]
   return tree_tpl(JSON.stringify(result))
 }
